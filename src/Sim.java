@@ -36,7 +36,10 @@ public class Sim extends JPanel implements ActionListener {
 
     private Timer timer;
 
-    public Sim(){
+    private DataTablePanel dataTablePanel;
+
+    public Sim(DataTablePanel dataTablePanel) {
+        this.dataTablePanel = dataTablePanel;
         pendulumEuler = new Pendulum(intialTheta,intialOmega);
         pendulumMidpoint = new Pendulum(intialTheta,intialOmega);
         pendulumRK4 = new Pendulum(intialTheta,intialOmega);
@@ -64,6 +67,24 @@ public class Sim extends JPanel implements ActionListener {
         energyEuler.add(computeEnergy(pendulumEuler));
         energyMidpoint.add(computeEnergy(pendulumMidpoint));
         energyRK4.add(computeEnergy(pendulumRK4));
+
+        Object[] rowData = new Object[]{
+                String.format("%.2f", time.get(time.size()-1)),
+                String.format("%.4f", pendulumEuler.getTheta()),
+                String.format("%.4f", pendulumEuler.getOmega()),
+                String.format("%.4f", energyEuler.get(energyEuler.size()-1)),
+                String.format("%.4f", pendulumMidpoint.getTheta()),
+                String.format("%.4f", pendulumMidpoint.getOmega()),
+                String.format("%.4f", energyMidpoint.get(energyMidpoint.size()-1)),
+                String.format("%.4f", pendulumRK4.getTheta()),
+                String.format("%.4f", pendulumRK4.getOmega()),
+                String.format("%.4f", energyRK4.get(energyRK4.size()-1))
+        };
+        dataTablePanel.addRow(rowData);
+        if(dataTablePanel.getRowCount() > maxDataPoints) {
+            dataTablePanel.removeRow(0);
+        }
+
         int width = getWidth();
         int animationHeight = getHeight()/2;
         pivotX=width/2;
